@@ -21,6 +21,7 @@ function App(){
   const onKey=e=>{if(e.key==='Escape'){setCartOpen(false);return}if(e.key!=='Tab'||!panelRef.current)return;const f=panelRef.current.querySelectorAll('button:not([disabled])');if(!f.length)return;const first=f[0],last=f[f.length-1];
    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}else if(!panelRef.current.contains(document.activeElement)){e.preventDefault();first.focus()}};
   document.addEventListener('keydown',onKey);return()=>{document.removeEventListener('keydown',onKey);prev?.focus?.()}},[cartOpen]);
+ useEffect(()=>{if(cartOpen&&panelRef.current&&!panelRef.current.contains(document.activeElement))closeRef.current?.focus()},[cart.length,cartOpen]);
  const count=cart.reduce((a,x)=>a+x.qty,0);const total=cart.reduce((a,x)=>a+x.qty*x.price,0);
  function add(p,size){setCart(prev=>{const key=p.id+'-'+size,hit=prev.find(x=>x.key===key);return hit?prev.map(x=>x.key===key?{...x,qty:x.qty+1}:x):[...prev,{...p,key,size,qty:1}]});setNotice(`${p.name}, talla ${size}, añadido al carrito`);setCartOpen(true)}
  function changeQty(key,delta){setCart(prev=>prev.map(x=>x.key===key?{...x,qty:Math.max(0,x.qty+delta)}:x).filter(x=>x.qty>0))}
