@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';import{products,formatPrice,sizeFromChest,filterProducts}from '../src/catalog.js';
+test('catálogo contiene identificadores únicos',()=>assert.equal(new Set(products.map(p=>p.id)).size,products.length));
+test('productos tienen precios positivos y tallas',()=>assert.ok(products.every(p=>p.price>0&&p.sizes.length>0)));
+test('guía de talla básica y extremos',()=>{assert.equal(sizeFromChest(30),'XS');assert.equal(sizeFromChest(50),'M');assert.equal(sizeFromChest(80),'XL');assert.equal(sizeFromChest(-2),null)});
+test('precios en soles',()=>assert.equal(formatPrice(69),'S/ 69.00'));
+test('búsqueda "Hoodie" devuelve solo el Hoodie Terracota',()=>assert.deepEqual(filterProducts(products,'Todos','Hoodie').map(p=>p.id),['LF-001']));
+test('búsqueda ignora mayúsculas y espacios',()=>assert.deepEqual(filterProducts(products,'Todos','  hoodie ').map(p=>p.id),['LF-001']));
+test('filtro "Abrigos" devuelve solo abrigos',()=>{const r=filterProducts(products,'Abrigos','');assert.ok(r.length>0);assert.ok(r.every(p=>p.type==='Abrigos'))});
+test('"Hoodie" dentro de "Abrigos" produce estado vacío',()=>assert.equal(filterProducts(products,'Abrigos','Hoodie').length,0));
+test('"Todos" sin búsqueda muestra el catálogo completo',()=>assert.equal(filterProducts(products,'Todos','').length,products.length));
